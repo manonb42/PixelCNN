@@ -3,30 +3,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 
-
-class MaskedConv2d(nn.Conv2d):
-    """
-    Implémentation d'une convolution masquée
-    """
-    def __init__(self, in_channels, out_channels, kernel_size, mask_type='A',
-                 stride=1, bias=True):
-        if isinstance(kernel_size, tuple):
-            kernel_size = max(kernel_size)
-        padding = kernel_size // 2
-
-        super().__init__(in_channels, out_channels, kernel_size,
-                         stride=stride, padding=padding, bias=bias)
-        mask = torch.ones(out_channels, in_channels, kernel_size, kernel_size)
-        center = kernel_size // 2
-
-        mask[:, :, center, center + (mask_type == 'B'):] = 0  # Masquer pixels actuels (A) ou futurs (B) horizontalement
-        mask[:, :, center + 1:] = 0  # Masquer pixels futurs verticalement
-
-        self.register_buffer('mask', mask)
-
-    def forward(self, x):
-        masked_weight = self.weight * self.mask
-        return F.conv2d(x, masked_weight, self.bias, self.stride, self.padding, self.dilation, self.groups)
+from masked import MaskedConv2d
+from condition import ConditionEncoder
 
 
 class GatedActivation(nn.Module):
@@ -87,21 +65,6 @@ class GatedPixelCNNLayer(nn.Module):
         return h_out, skip
 
 
-class ConditionEncoder(nn.Module):
-    """
-    Encoder l'information conditionnelle en un vecteur d'embedding
-    """
-    def __init__(self, num_classes, embedding_dim, hidden_dim, output_dim):
-        super().__init__()
-        self.embedding = nn.Embedding(num_classes, embedding_dim)
-        self.fc1 = nn.Linear(embedding_dim, hidden_dim)
-        self.fc2 = nn.Linear(hidden_dim, output_dim)
-
-    def forward(self, condition):
-        x = self.embedding(condition)
-        x = F.relu(self.fc1(x))
-        x = self.fc2(x)
-        return x
 
 
 class GatedPixelCNN(nn.Module):

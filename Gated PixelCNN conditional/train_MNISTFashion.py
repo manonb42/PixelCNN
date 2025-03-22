@@ -8,6 +8,8 @@ from tqdm import tqdm
 import matplotlib.pyplot as plt
 import os
 
+from masked import MaskedConv2d
+from condition import ConditionEncoder
 from gated_pixelcnn import GatedPixelCNN
 from fonctions_train import train_epoch, evaluate, main
 from checkpoint import save_checkpoint, load_checkpoint
