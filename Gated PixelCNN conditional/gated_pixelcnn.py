@@ -82,18 +82,14 @@ class GatedPixelCNN(nn.Module):
         self.input_conv = MaskedConv2d(in_channels, hidden_channels,
                                      kernel_size=kernel_size, mask_type='A')
 
-        # Encodeur de condition
         self.cond_encoder = ConditionEncoder(n_classes, embedding_dim=64,
                                             hidden_dim=128, output_dim=hidden_channels)
 
-        # Couches Gated PixelCNN
         self.gated_layers = nn.ModuleList()
         for _ in range(n_layers):
             self.gated_layers.append(
                 GatedPixelCNNLayer(hidden_channels, hidden_channels, kernel_size=3)
             )
-
-        # Couches de sortie
         self.output_layers = nn.Sequential(
             nn.ReLU(),
             nn.Conv2d(hidden_channels, hidden_channels, kernel_size=1),
@@ -105,7 +101,6 @@ class GatedPixelCNN(nn.Module):
         batch_size, in_channels, height, width = x.shape
         assert in_channels == self.in_channels, f"Expected {self.in_channels} input channels, got {in_channels}"
 
-        # Transformation conditionnelle
         cond_features = None
         if condition is not None:
             cond_vector = self.cond_encoder(condition)
@@ -127,6 +122,7 @@ class GatedPixelCNN(nn.Module):
         out = out.view(batch_size, in_channels, self.output_dim, height, width)
         out = out.permute(0, 1, 3, 4, 2)
         return out
+
 
     def sample(self, condition=None, shape=(3, 32, 32), device='cpu'):
         """
