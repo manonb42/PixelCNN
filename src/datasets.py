@@ -8,25 +8,34 @@ from pathlib import Path
 datasets_folder = Path(__file__).parent.parent / "datasets"
 datasets_folder.mkdir(exist_ok=True)
 
-def mnist(device, binarize = False):
 
-    binarize = Lambda(lambda x: x > 0.5)
-    transform = Compose([ToTensor(), binarize]) if binarize else ToTensor()
-
-    train_data = datasets.MNIST(str(datasets_folder),download=True,train=True, transform=transform)
-    test_data  = datasets.MNIST(str(datasets_folder),download=True,train=False, transform=transform)
-
-    inputs, labels = map(list, zip(*train_data))
+def preprocess(data, device):
+    """ Load data on the correct device and return a TensorDataset
+        than can later be used with a DataLoader
+    """
+    inputs, labels = map(list, zip(*data))
     inputs = torch.stack(inputs).to(device)
     labels = torch.tensor(labels, dtype=torch.uint8).to(device)
 
-    train = TensorDataset(inputs, labels)
+    return TensorDataset(inputs, labels)
 
+def mnist(device):
 
-    inputs, labels = map(list, zip(*test_data))
-    inputs = torch.stack(inputs).to(device)
-    labels = torch.tensor(labels, dtype=torch.uint8).to(device)
+    train_data = datasets.MNIST(str(datasets_folder),download=True,train=True, transform=ToTensor())
+    test_data  = datasets.MNIST(str(datasets_folder),download=True,train=False, transform=ToTensor())
 
-    test = TensorDataset(inputs, labels)
+    return preprocess(train_data, device), preprocess(test_data, device)
 
-    return train, test
+def fashion_mnist(device):
+
+    train_data = datasets.FashionMNIST(str(datasets_folder),download=True,train=True, transform=ToTensor())
+    test_data  = datasets.FashionMNIST(str(datasets_folder),download=True,train=False, transform=ToTensor())
+
+    return preprocess(train_data, device), preprocess(test_data, device)
+
+def cifar_10(device):
+
+    train_data = datasets.CIFAR10(str(datasets_folder),download=True,train=True, transform=ToTensor())
+    test_data  = datasets.CIFAR10(str(datasets_folder),download=True,train=False, transform=ToTensor())
+
+    return preprocess(train_data, device), preprocess(test_data, device)
