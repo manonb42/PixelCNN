@@ -1,2 +1,4 @@
 src/app/app CIFAR10/checkpoints/pixelcnn_best.pth.gz
 src/app/app CIFAR10/checkpoints/pixelcnn_latest.pth.gz
+
+__pycache__
