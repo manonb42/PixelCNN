@@ -13,8 +13,8 @@ def mnist(device, binarize = False):
     binarize = Lambda(lambda x: x > 0.5)
     transform = Compose([ToTensor(), binarize]) if binarize else ToTensor()
 
-    train_data = datasets.MNIST(".",download=True,train=True, transform=transform)
-    test_data  = datasets.MNIST(".",download=True,train=False, transform=transform)
+    train_data = datasets.MNIST(str(datasets_folder),download=True,train=True, transform=transform)
+    test_data  = datasets.MNIST(str(datasets_folder),download=True,train=False, transform=transform)
 
     inputs, labels = map(list, zip(*train_data))
     inputs = torch.stack(inputs).to(device)
