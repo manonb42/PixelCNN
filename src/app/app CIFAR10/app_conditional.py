@@ -35,10 +35,33 @@ def load_model():
     ).to(device)
     
     optimizer = torch.optim.Adam(model.parameters())
-    
-    checkpoint_path = './checkpoints/pixelcnn_best.pth'
-    if os.path.exists(checkpoint_path):
-        epoch, loss = load_checkpoint(model, optimizer, checkpoint_path)
+    import gzip
+import shutil
+import tempfile
+
+@st.cache_resource
+def load_model():
+    model = GatedPixelCNN(
+        in_channels=in_channels,
+        hidden_channels=hidden_channels,
+        n_layers=n_layers,
+        n_classes=n_classes,
+        output_dim=output_dim
+    ).to(device)
+
+    optimizer = torch.optim.Adam(model.parameters())
+
+    compressed_checkpoint = "./checkpoints/pixelcnn_best.pth.gz"
+
+    if os.path.exists(compressed_checkpoint):
+        with gzip.open(compressed_checkpoint, "rb") as f:
+            temp_file = tempfile.NamedTemporaryFile(delete=False)
+            shutil.copyfileobj(f, temp_file)
+            temp_file.close()
+
+            epoch, loss = load_checkpoint(model, optimizer, temp_file.name)
+            os.remove(temp_file.name)  
+            
         st.success(f"Modèle chargé avec succès (Epoch {epoch}, Loss {loss:.4f})")
         return model
     else:
