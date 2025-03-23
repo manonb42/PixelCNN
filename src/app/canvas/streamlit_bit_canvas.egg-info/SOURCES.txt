@@ -1,0 +1,8 @@
+MANIFEST.in
+setup.py
+bitcanvas/__init__.py
+streamlit_bit_canvas.egg-info/PKG-INFO
+streamlit_bit_canvas.egg-info/SOURCES.txt
+streamlit_bit_canvas.egg-info/dependency_links.txt
+streamlit_bit_canvas.egg-info/requires.txt
+streamlit_bit_canvas.egg-info/top_level.txt
