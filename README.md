@@ -1,6 +1,6 @@
 # PixelCNN
 
-Ce dépôt contient des implémentations de modèles PixelCNN, notamment PixelCNN standard et Gated PixelCNN, pour la génération d'images pixel par pixel sur différents jeux de données.
+Ce dépôt contient des implémentations de modèles PixelCNN, notamment PixelCNN standard et Gated PixelCNN conditional, pour la génération d'images pixel par pixel sur différents jeux de données.
 
 ## Description
 
