@@ -1,4 +1,4 @@
-# PixelNN
+# PixelCNN
 
 
 ``` sh
