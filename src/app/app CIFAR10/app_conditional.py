@@ -23,19 +23,6 @@ output_dim = 256
 
 class_names = ['avion', 'automobile', 'oiseau', 'chat', 'cerf',
                'chien', 'grenouille', 'cheval', 'bateau', 'camion']
-
-@st.cache_resource
-def load_model():
-    model = GatedPixelCNN(
-        in_channels=in_channels,
-        hidden_channels=hidden_channels,
-        n_layers=n_layers,
-        n_classes=n_classes,
-        output_dim=output_dim
-    ).to(device)
-    
-    optimizer = torch.optim.Adam(model.parameters())
-    import gzip
 import shutil
 import tempfile
 
