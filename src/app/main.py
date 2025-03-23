@@ -23,7 +23,7 @@ st.title("PixelCNN")
 
 # Slider to select the epoch [0-200]
 digit = st.slider("Digit", 0, 9, 0)
-epoch = st.slider("Epoch", 1, len(models(digit)), 1)
+epoch = st.slider("Epoch", 1, len(models(digit)), 1) - 1
 variance = st.slider("Variance", 1, 64, 1)
 
 model = Model().to(device)
